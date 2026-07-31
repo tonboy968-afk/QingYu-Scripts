@@ -16,8 +16,8 @@
         "python -m compileall app scripts 无语法错误"
       ],
       "priority": 1,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 验证通过"
     },
     {
       "id": "US-002",

@@ -7,6 +7,24 @@
 - 前端将放 `frontend/`（Vite+Vue3+Element Plus），dev server 端口 5173，`vite.config.js` 中 `/api` 代理目标为 `http://127.0.0.1:8010`
 - 本机 Python 3.12 位于 `C:\Python312`，`python` 命令直接可用；npm 可用（Node v24）
 - 健康检查端点：`GET /api/v1/health`
+- **cmd 下 curl 带中文查询参数会乱码/空响应，必须 URL 编码**（如 退款 → %E9%80%80%E6%AC%BE）；POST/JSON body 里的中文在 cmd 里也可能出问题，尽量用 ASCII 或临时 .py 脚本
+- **同一 cmd 命令行里用 `&` 并行执行 curl 时存在竞态**（如 DELETE 与 PUT 同一 id），串行测试写入/修改类操作
+- 标签精确匹配技巧：`func.concat(",", Script.tags, ",").like(f"%,{tag},%")` 避免"催"误匹配"催办"
+- 停止 uvicorn：`for /f "tokens=5" %a in ('netstat -ano ^| findstr :8010 ^| findstr LISTENING') do taskkill /F /PID %a`
+---
+## 2026-07-31 21:40 - US-003
+- 实现 `backend/app/routers/scripts.py`：话术 CRUD + 关键词搜索 + 分类/店铺/标签筛选 + 分页
+  - GET /api/v1/scripts：q（title/content/tags LIKE）、category_id、store_id、tag（精确标签匹配）、page/page_size（默认20，上限100），返回 {total, items}，items 含 category_name/store_name
+  - POST /api/v1/scripts：201；category_id/store_id 不存在返回 400
+  - GET/PUT/DELETE /api/v1/scripts/{id}：404 处理；PUT 仅更新传入字段（exclude_unset），store_id 传 null 可清除绑定
+  - 列表按 updated_at 降序，joinedload 预加载分类/店铺
+- 验证通过：compileall 无错误；启动 8010 后逐一 curl 验证：total=13、q=退款→3、category_id=2→3、store_id=1→3、tag=催办→1（tag=催→0 精确匹配生效）、q+category 组合、分页 total/items、POST 201、坏外键 400、PUT 改标题/绑定/清空店铺、DELETE 204、不存在 id 404
+- 测试用数据已删除，数据库恢复 13 条
+- **Learnings for future iterations:**
+  - cmd curl 中文查询参数必须 URL 编码（q=退款 → q=%E9%80%80%E6%AC%BE）
+  - 同命令行 `&` 并行 curl 有竞态，写入/修改测试要串行
+  - 路由文件内定义请求模型（ScriptCreate/ScriptUpdate/ScriptOut/ScriptListOut），不碰 schemas.py
+- 提交：feat: US-003 - 话术 CRUD 与搜索 API
 ---
 ## 2026-07-31 21:15 - US-001
 - 完成 FastAPI 后端骨架：app/main.py（入口、CORS、lifespan 建表）、app/db.py（engine/SessionLocal/Base/get_db/init_db）、app/models.py（Store/Category/Script/StoreRule 四表）、app/schemas.py（基础 Out 模型）、5 个空路由占位（stores/categories/scripts/rules/dashboard，前缀 /api/v1/...）
@@ -19,4 +37,18 @@
   - cmd 里 `python -c` 多行代码会被压成一行导致 IndentationError，临时脚本写文件再执行
   - pip install 时需先 `cd` 到项目根目录（requirements.txt 在 loop 根目录）
 - 提交：feat: US-001 - 后端骨架与数据模型
+---
+## 2026-07-31 21:40 - US-003
+- 实现 `backend/app/routers/scripts.py`：话术 CRUD + 关键词搜索 + 分类/店铺/标签筛选 + 分页
+  - GET /api/v1/scripts：q（title/content/tags LIKE）、category_id、store_id、tag（精确标签匹配）、page/page_size（默认20，上限100），返回 {total, items}，items 含 category_name/store_name
+  - POST /api/v1/scripts：201；category_id/store_id 不存在返回 400
+  - GET/PUT/DELETE /api/v1/scripts/{id}：404 处理；PUT 仅更新传入字段（exclude_unset），store_id 传 null 可清除绑定
+  - 列表按 updated_at 降序，joinedload 预加载分类/店铺
+- 验证通过：compileall 无错误；启动 8010 后逐一 curl 验证：total=13、q=退款→3、category_id=2→3、store_id=1→3、tag=催办→1（tag=催→0 精确匹配生效）、q+category 组合、分页 total/items、POST 201、坏外键 400、PUT 改标题/绑定/清空店铺、DELETE 204、不存在 id 404
+- 测试用数据已删除，数据库恢复 13 条
+- **Learnings for future iterations:**
+  - cmd curl 中文查询参数必须 URL 编码（q=退款 → q=%E9%80%80%E6%AC%BE）
+  - 同命令行 `&` 并行 curl 有竞态，写入/修改测试要串行
+  - 路由文件内定义请求模型（ScriptCreate/ScriptUpdate/ScriptOut/ScriptListOut），不碰 schemas.py
+- 提交：feat: US-003 - 话术 CRUD 与搜索 API
 ---
