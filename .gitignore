@@ -6,6 +6,13 @@ venv/
 
 # 数据库文件
 backend/data/
+*.db
+*.sqlite
+*.sqlite3
+
+# 日志文件
+*.log
+backend/*.log
 
 # Node / 前端构建产物
 node_modules/
@@ -15,4 +22,3 @@ frontend/node_modules/
 # 编辑器
 .vscode/
 .idea/
-"backend/uvicorn_test.log"  
