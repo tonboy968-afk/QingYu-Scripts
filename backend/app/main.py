@@ -1,5 +1,6 @@
 """多店铺客服话术管理系统 - FastAPI 入口"""
 import os
+import sys
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -14,8 +15,12 @@ from .routers import categories, dashboard, rules, scripts, stores
 # Determine the project root and frontend dist path
 # backend/app/main.py is at <project_root>/backend/app/main.py
 # frontend/dist is at <project_root>/frontend/dist
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-frontend_dist = os.path.join(project_root, 'frontend', 'dist')
+# 冻结打包（PyInstaller）时，静态资源位于 sys._MEIPASS 下
+if getattr(sys, "frozen", False):
+    _base = sys._MEIPASS
+else:
+    _base = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+frontend_dist = os.path.join(_base, 'frontend', 'dist')
 
 
 @asynccontextmanager

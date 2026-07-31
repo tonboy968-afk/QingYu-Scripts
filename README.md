@@ -219,6 +219,19 @@ npm run dev
 ---
 
 
+## 📦 独立版（Windows exe）
+
+非技术同学 / 家人可直接使用打包好的单文件程序，**无需安装 Python 或 Node**：
+
+1. 从 [Releases](https://github.com/tonboy968-afk/QingYu-Scripts/releases) 下载 `QingYu-Scripts.exe`
+2. **双击运行**，程序自动建库、写入示例数据，并打开浏览器访问 `http://127.0.0.1:8010`
+3. 数据保存在 exe 同目录的 `data/kefu.db`，运行日志为 `QingYu-Scripts.log`
+4. 退出：关闭页面后，在任务管理器结束 `QingYu-Scripts` 进程即可
+
+> 源码日常迭代照常进行；仅在大版本发布时执行 `package.ps1` 重新打包（需本机 Python 3.11+ 与 Node.js 18+）。
+
+---
+
 ## 🔗 相关项目
 
 - **[QingYu Agent](https://github.com/tonboy968-afk/qing-yu-agent)** - Workflow + Policy 双引擎驱动的多平台智能客服 Agent

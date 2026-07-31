@@ -22,3 +22,10 @@ frontend/node_modules/
 # 编辑器
 .vscode/
 .idea/
+
+# 打包产物（exe 走 GitHub Releases，不进源码库）
+release/
+build_tmp/
+*.spec
+
+build_tmp*/

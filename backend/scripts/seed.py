@@ -213,7 +213,7 @@ def main() -> None:
         n_scripts = db.query(Script).count()
         n_rules = db.query(StoreRule).count()
         print(
-            f"✅ 种子数据完成：{n_stores} 个店铺、{n_cats} 个分类、"
+            f"[OK] 种子数据完成：{n_stores} 个店铺、{n_cats} 个分类、"
             f"{n_scripts} 条话术、{n_rules} 条售后规则"
         )
     finally:
