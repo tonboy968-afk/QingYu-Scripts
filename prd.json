@@ -17,7 +17,7 @@
       ],
       "priority": 1,
       "passes": true,
-      "notes": "2026-07-31 验证通过"
+      "notes": "2026-07-31 验证代理 PASS"
     },
     {
       "id": "US-002",
@@ -31,8 +31,8 @@
         "python -m compileall app 无语法错误"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 合并提交 US-002 & US-004 验证通过"
     },
     {
       "id": "US-003",
@@ -47,8 +47,8 @@
         "python -m compileall app 无语法错误"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 验证代理 PASS"
     },
     {
       "id": "US-004",
@@ -62,8 +62,8 @@
         "python -m compileall app 无语法错误"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 合并提交与验证通过"
     },
     {
       "id": "US-005",
@@ -74,7 +74,7 @@
         "侧边栏导航包含：仪表盘、话术管理、分类管理、店铺管理（含售后规则）四项",
         "路由已注册 4 个占位视图（DashboardView/ScriptsView/CategoriesView/StoresView），占位页显示对应标题",
         "src/api/ 下已创建 dashboard.js、scripts.js、categories.js、stores.js、rules.js 五个 API 封装模块",
-        "vite.config.js 配置 /api 代理到 http://127.0.0.1:8000",
+        "vite.config.js 配置 /api 代理到 http://127.0.0.1:8010",
         "npm run build 构建成功无报错",
         "浏览器打开可见侧边栏且可切换路由"
       ],
