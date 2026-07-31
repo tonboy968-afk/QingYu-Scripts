@@ -1,0 +1,159 @@
+{
+  "project": "KefuScriptManager",
+  "branchName": "mission/kefu-script-mvp",
+  "description": "多店铺客服话术管理系统 MVP：可视化面板、话术分类管理、快速搜索、分店铺售后规则，预留 API/模型接入/MCP/知识库扩展点",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "后端骨架与数据模型",
+      "description": "作为系统，我需要搭建 FastAPI + SQLAlchemy + SQLite 后端骨架并定义店铺/话术分类/话术/售后规则四张数据表，以便后续功能在其上构建",
+      "acceptanceCriteria": [
+        "项目结构包含 app/main.py、app/db.py、app/models.py、app/schemas.py、app/routers/、scripts/seed.py",
+        "数据模型包含 Store、Category、Script、StoreRule 四张表：店铺(name/platform/notes)、分类(name/type/sort_order)、话术(title/content/tags/category_id/store_id 可空/created_at/updated_at)、规则(store_id/rule_type/title/content)",
+        "执行 scripts/seed.py 后数据库含 ≥2 个店铺、5 个种子分类（单产品售前话术/售后通用话术/产品售后纠缠话术/后台申诉话术/产品技术类话术）、≥10 条示例话术、≥4 条店铺售后规则",
+        "GET /api/v1/health 返回 200 与 {\"status\":\"ok\"}",
+        "app/routers/ 已创建 stores.py、categories.py、scripts.py、rules.py、dashboard.py 五个路由文件并注册到 main.py（内容可为空路由占位）",
+        "python -m compileall app scripts 无语法错误"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "分类与店铺管理 API + 仪表盘统计",
+      "description": "作为管理员，我需要管理话术分类和店铺，并在仪表盘看到整体统计，以便维护基础数据",
+      "acceptanceCriteria": [
+        "GET/POST/PUT/DELETE /api/v1/categories 完整可用，列表返回每个分类的话术数量",
+        "GET/POST/PUT/DELETE /api/v1/stores 完整可用",
+        "GET /api/v1/dashboard/stats 返回：话术总数、分类数、店铺数、规则数、各分类话术数量、最近更新话术列表",
+        "删除仍有话术的分类返回 400 错误且不删除",
+        "python -m compileall app 无语法错误"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "话术 CRUD 与搜索 API",
+      "description": "作为客服，我需要按关键词、分类、店铺快速检索话术并维护话术，以便快速找到可用话术",
+      "acceptanceCriteria": [
+        "GET/POST/PUT/DELETE /api/v1/scripts 完整可用",
+        "GET /api/v1/scripts?q=关键词 对标题/内容/标签做模糊搜索",
+        "支持 category_id、store_id、tag 筛选参数（可与 q 组合）",
+        "列表接口支持分页（page/page_size），返回 total 总数",
+        "操作不存在的 id 返回 404",
+        "python -m compileall app 无语法错误"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "店铺售后规则 API",
+      "description": "作为管理员，我需要为每个店铺单独维护售后规则，以便分店铺执行差异化售后策略",
+      "acceptanceCriteria": [
+        "GET/POST/PUT/DELETE /api/v1/rules 完整可用",
+        "GET /api/v1/rules?store_id=X 可按店铺过滤",
+        "规则包含类型字段（退款/运费/时效/纠纷/备注等枚举）",
+        "创建规则时 store_id 不存在返回 400 错误",
+        "python -m compileall app 无语法错误"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "前端骨架与侧边栏布局",
+      "description": "作为用户，我需要一个带侧边栏导航的 Web 界面骨架，以便进入各个管理页面",
+      "acceptanceCriteria": [
+        "frontend/ 为 Vite+Vue3 项目，已安装 vue-router、axios、element-plus",
+        "侧边栏导航包含：仪表盘、话术管理、分类管理、店铺管理（含售后规则）四项",
+        "路由已注册 4 个占位视图（DashboardView/ScriptsView/CategoriesView/StoresView），占位页显示对应标题",
+        "src/api/ 下已创建 dashboard.js、scripts.js、categories.js、stores.js、rules.js 五个 API 封装模块",
+        "vite.config.js 配置 /api 代理到 http://127.0.0.1:8000",
+        "npm run build 构建成功无报错",
+        "浏览器打开可见侧边栏且可切换路由"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "可视化仪表盘页面",
+      "description": "作为用户，我打开软件首先看到数据总览，以便快速了解话术库规模并直达搜索",
+      "acceptanceCriteria": [
+        "页面顶部 4 个统计卡片（话术总数/分类数/店铺数/售后规则数），数据来自 /api/v1/dashboard/stats",
+        "展示各分类话术数量分布",
+        "展示最近更新的话术列表",
+        "提供快捷搜索框，输入关键词可跳转到话术管理页并携带搜索词",
+        "npm run build 通过，浏览器验证统计卡片与分类分布正常渲染"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "话术管理页面（搜索/筛选/编辑/复制）",
+      "description": "作为客服，我需要在一个页面完成话术搜索、筛选、新建、编辑、删除、复制，以便快速精准找到并复用话术",
+      "acceptanceCriteria": [
+        "搜索框支持关键词搜索（回车触发），支持分类、店铺下拉筛选",
+        "话术表格显示标题、分类、店铺、标签、更新时间，支持分页",
+        "新建/编辑弹窗表单：标题、分类、店铺（可选）、内容、标签",
+        "操作按钮：编辑、删除（带确认框）、复制内容到剪贴板、查看详情",
+        "npm run build 通过，浏览器验证搜索/筛选/新建/编辑/删除全流程"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "分类管理页面",
+      "description": "作为管理员，我需要维护话术分类（含类型与排序），以便话术归类清晰",
+      "acceptanceCriteria": [
+        "分类列表显示名称、类型、排序、话术数量",
+        "新建/编辑分类弹窗：名称、类型、排序",
+        "删除被后端拒绝（分类下有话术）时前端弹出错误提示",
+        "npm run build 通过，浏览器验证分类 CRUD 流程"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "店铺管理与售后规则页面",
+      "description": "作为管理员，我需要管理店铺并为每个店铺维护售后规则，以便分店铺差异化运营",
+      "acceptanceCriteria": [
+        "店铺表格：名称、平台、备注，支持新建/编辑/删除",
+        "选中店铺后展示该店铺的售后规则列表（类型、标题、内容）",
+        "支持售后规则新增/编辑/删除",
+        "npm run build 通过，浏览器验证店铺与规则 CRUD 流程"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "扩展点预留与项目文档",
+      "description": "作为开发者，我需要系统预留模型接入/MCP/知识库扩展点并完善文档，以便后续实现话术纠错、润化与自动化",
+      "acceptanceCriteria": [
+        "app/config.py 支持配置模型接入（base_url/api_key/model），未配置时默认关闭",
+        "app/services/ai.py 提供 correct_script（话术纠错）与 polish_script（话术润化）占位实现：未配置模型时返回原内容并提示未启用",
+        "README.md 包含启动步骤、API 一览、扩展指南（模型接入/MCP/知识库 roadmap）",
+        "后端启动后 /docs 可打开 OpenAPI 文档",
+        "python -m compileall app 无语法错误"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

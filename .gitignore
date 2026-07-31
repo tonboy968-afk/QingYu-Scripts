@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 数据库文件
+backend/data/
+
+# Node / 前端构建产物
+node_modules/
+frontend/dist/
+frontend/node_modules/
+
+# 编辑器
+.vscode/
+.idea/

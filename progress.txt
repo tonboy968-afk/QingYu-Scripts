@@ -1,0 +1,22 @@
+﻿## Codebase Patterns
+- 后端代码在 `backend/`，启动命令必须在 backend 目录下执行：`python -m uvicorn app.main:app --host 127.0.0.1 --port 8010`
+- **后端端口固定为 8010**（本机 8000 被 Windows 系统服务 svchost.exe 占用，绑定会报 WinError 10013，不要用 8000）
+- 每个资源一个路由文件：`backend/app/routers/<name>.py`，统一前缀 `/api/v1/<name>`；各路由专属的 Pydantic 请求/响应模型**定义在路由文件内部**，避免多个 worker 并行改 `schemas.py` 造成冲突
+- 数据库：SQLite，文件在 `backend/data/kefu.db`（已 gitignore）；ORM 用 SQLAlchemy 2.0 `Mapped` 风格；启动时 `init_db()` 自动建表，无需迁移工具
+- 种子数据：`backend/scripts/seed.py`（幂等，可重复执行）；执行方式 `cd backend && python scripts/seed.py`
+- 前端将放 `frontend/`（Vite+Vue3+Element Plus），dev server 端口 5173，`vite.config.js` 中 `/api` 代理目标为 `http://127.0.0.1:8010`
+- 本机 Python 3.12 位于 `C:\Python312`，`python` 命令直接可用；npm 可用（Node v24）
+- 健康检查端点：`GET /api/v1/health`
+---
+## 2026-07-31 21:15 - US-001
+- 完成 FastAPI 后端骨架：app/main.py（入口、CORS、lifespan 建表）、app/db.py（engine/SessionLocal/Base/get_db/init_db）、app/models.py（Store/Category/Script/StoreRule 四表）、app/schemas.py（基础 Out 模型）、5 个空路由占位（stores/categories/scripts/rules/dashboard，前缀 /api/v1/...）
+- 种子数据 backend/scripts/seed.py：3 个店铺、5 个分类（单产品售前话术/售后通用话术/产品售后纠缠话术/后台申诉话术/产品技术类话术）、13 条示例话术（每分类≥2）、5 条分店铺售后规则；可重复执行（先清空再插入）
+- 写入 requirements.txt、README.md、.gitignore（忽略 backend/data/、__pycache__、node_modules 等）
+- 验证通过：compileall 无错误；uvicorn 启动成功，GET /api/v1/health 返回 200 {"status":"ok"}；种子数据计数 3/5/13/5；5 个路由模块已注册
+- **Learnings for future iterations:**
+  - 端口 8000 被 svchost.exe（Windows 系统服务）占用，后端统一用 8010
+  - 空 APIRouter（无路由）不会出现在 OpenAPI paths 中，属正常现象；验证注册可用 import + prefix 断言
+  - cmd 里 `python -c` 多行代码会被压成一行导致 IndentationError，临时脚本写文件再执行
+  - pip install 时需先 `cd` 到项目根目录（requirements.txt 在 loop 根目录）
+- 提交：feat: US-001 - 后端骨架与数据模型
+---
