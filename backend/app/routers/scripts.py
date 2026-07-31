@@ -56,6 +56,8 @@ class ScriptListOut(BaseModel):
 
     total: int
     items: list[ScriptOut]
+    page: int
+    page_size: int
 
 
 # ---------- 辅助函数 ----------
@@ -123,7 +125,9 @@ def list_scripts(
         )
         .all()
     )
-    return ScriptListOut(total=total, items=[_to_out(s) for s in items])
+    return ScriptListOut(
+        total=total, items=[_to_out(s) for s in items], page=page, page_size=page_size
+    )
 
 
 @router.post("", response_model=ScriptOut, status_code=201)
