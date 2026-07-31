@@ -1,25 +1,35 @@
 @echo off
-chcp 65001 >nul
+setlocal
+
 echo ========================================
-echo   客服话术管理系统 - 启动中...
+echo   Kefu Script Manager - Starting...
 echo ========================================
 echo.
 
 cd /d "%~dp0backend"
 
-echo [1/2] 正在启动后端服务 (端口: 8010)...
+if not exist "app\main.py" (
+    echo [ERROR] Cannot find backend/app/main.py. Please run this script in the project root.
+    pause
+    exit /b 1
+)
+
+echo [1/2] Starting backend service on port 8010...
+echo Please check the 'KefuScriptBackend' window for service logs.
+
 start "KefuScriptBackend" cmd /k "python -m uvicorn app.main:app --host 127.0.0.1 --port 8010 --reload"
 
-echo [2/2] 等待服务启动...
+echo [2/2] Waiting for service to start...
 timeout /t 3 > nul
 
-echo 正在打开浏览器...
-start http://127.0.0.1:8010
+echo Opening browser...
+start "" http://127.0.0.1:8010
 
 echo ========================================
-echo   启动完成！
-echo   - 后端服务日志请在弹出的窗口中查看
-echo   - 系统界面已在浏览器中自动打开
-echo   - 关闭后端窗口即停止服务
+echo   Started successfully!
+echo   - Backend logs are in the 'KefuScriptBackend' window.
+echo   - The system interface is opened in your browser.
+echo   - Close the backend window to stop the service.
 echo ========================================
 echo.
+pause
