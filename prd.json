@@ -94,8 +94,8 @@
         "npm run build 通过，浏览器验证统计卡片与分类分布正常渲染"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 直接实现页面文件并通过构建"
     },
     {
       "id": "US-007",
@@ -109,8 +109,8 @@
         "npm run build 通过，浏览器验证搜索/筛选/新建/编辑/删除全流程"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 直接实现页面文件并通过构建"
     },
     {
       "id": "US-008",
@@ -123,8 +123,8 @@
         "npm run build 通过，浏览器验证分类 CRUD 流程"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 直接实现页面文件并通过构建"
     },
     {
       "id": "US-009",
@@ -137,8 +137,8 @@
         "npm run build 通过，浏览器验证店铺与规则 CRUD 流程"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "2026-07-31 直接实现页面文件并通过构建"
     },
     {
       "id": "US-010",
